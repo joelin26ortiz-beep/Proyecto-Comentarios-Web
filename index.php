@@ -1,3 +1,18 @@
+<?php
+
+$archivo = "comentarios.json";
+
+$comentarios = [];
+
+if (file_exists($archivo)) {
+    $contenido = file_get_contents($archivo);
+    $comentarios = json_decode($contenido, true);
+
+    if (!is_array($comentarios)) {
+        $comentarios = [];
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -66,16 +81,21 @@
         <!-- Zona de Comentarios Recibidos -->
         <div class="mt-5">
             <div class="text-muted mb-2">
-                <span id="contador">0</span> comentarios
+                <span id="contador"><?php echo count($comentarios); ?></span> comentarios
             </div>
-            <h4 class="fw-bold mb-3">Comentarios recibidos</h4>
 
-            <div id="listaComentarios">
-                <div class="comment-card">
-                    <div class="fw-bold text-dark">Ejemplo</div>
-                    <div class="text-secondary mt-1">Aquí se mostrarán los comentarios recibidos.</div>
-                </div>
-            </div>
+            <h4 class="fw-bold mb-3">Comentarios recibidos</h4>
+            <?php if (count($comentarios) > 0): ?>
+                <?php foreach ($comentarios as $comentario): ?>
+                    <div class="comment-card">
+                        <div class="fw-bold text-dark"><?php echo htmlspecialchars($comentario['nombre']); ?></div>
+                        <div class="text-secondary mt-1"><?php echo htmlspecialchars($comentario['comentario']); ?></div>
+                        <div class="text-muted mt-1" style="font-size: 0.85rem;"><?php echo htmlspecialchars($comentario['fecha']); ?></div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-muted">No hay comentarios aún.</p>
+            <?php endif; ?>
         </div>
 
     </div>
